@@ -70,11 +70,12 @@ class plotargs{
                 		vx.at(i) = this->x[i];
                 		vy.at(i) = this->y[i];
         		}
-        	plt::plot(vx, vy, color);
+        		plt::plot(vx, vy, color);
 			plt::title("Wykres");
 			//plt::xlabel("X");
 			//plt::ylabel("Y");
 			plt::legend();
+			plt::save("plot.jpg");//png zapisuje pusty plik
 			plt::show();
 		}
 
