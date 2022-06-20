@@ -3,6 +3,7 @@
 #endif
 
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 /*
@@ -26,7 +27,12 @@ class LinearFunction{
         
         float* wynik(){
             int i=0;
-            ilosc = (x_max-x_min)/jump; //ile wartosci x i y bedzie
+            if(jump==0){
+                ilosc = 1;
+            }
+            else{
+                ilosc = (x_max-x_min)/abs(jump); //ile wartosci x i y bedzie
+            }
             lista = new float[2*ilosc+2]; //Dwie zmienne - jedna tablica ... xd
             float y;
             float x = x_min; //pierwsze x to podane minimum
@@ -34,7 +40,10 @@ class LinearFunction{
                 y = a*x + b; // y=ax+b
                 lista[2*i] = x; //przypisanie x
                 lista[2*i+1] = y; //przypisanie y
-                x+=jump;
+                x+=abs(jump);
+                if(jump == 0){
+                    x=x_max+1;
+                }
                 i++;
                 
             }
@@ -47,12 +56,57 @@ class LinearFunction{
         }
         
         void wypisz(){
-            cout<<"ilosc: "<<ilosc<<endl;
-            for(int i=0; i<2*ilosc+2; i+=2){
+            //cout<<"ilosc: "<<ilosc<<endl;
+            for(int i=0; i<=2*ilosc; i+=2){
                 cout<<"x: "<<lista[i]<<" | y: "<<lista[i+1]<<endl;
             }
         }
 };
 
-
-
+class QuadraticFunction{
+    public:
+        float a,b,c,x_min,x_max,jump;
+        int ilosc;
+        float *lista;
+        
+        QuadraticFunction(float pa, float pb, float pc, float px_min, float px_max, float pjump){
+            this->a = pa;
+            this->b = pb;
+            this->c = pc;
+            this->x_min = px_min;
+            this->x_max = px_max;
+            this->jump = pjump;
+        }
+        
+        float* wynik(){
+            int i=0;
+            if(jump==0){
+                ilosc = 1;
+            }
+            else{
+                ilosc = (x_max-x_min)/abs(jump); //ile wartosci x i y bedzie
+            }
+            lista = new float[2*ilosc+2]; //Dwie zmienne - jedna tablica ... xd
+            float y;
+            float x = x_min; //pierwsze x to podane minimum
+            while(x <= x_max){ //petla az x nie wyjdzie ponad max
+                y = a*(x*x) + b*x + c; // y=ax+b
+                lista[2*i] = x; //przypisanie x
+                lista[2*i+1] = y; //przypisanie y
+                x+=abs(jump);
+                if(jump == 0){
+                    x=x_max+1;
+                }
+                i++;
+                
+            }
+            return lista; 
+        }
+        
+        void wypisz(){
+            //cout<<"ilosc: "<<ilosc<<endl;
+            for(int i=0; i<=2*ilosc; i+=2){
+                cout<<"x: "<<lista[i]<<" | y: "<<lista[i+1]<<endl;
+            }
+        }
+};
