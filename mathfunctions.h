@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <string>
 using namespace std;
 
 /*
@@ -31,7 +32,7 @@ class LinearFunction{
                 ilosc = 1;
             }
             else{
-                ilosc = (x_max-x_min)/abs(jump); //ile wartosci x i y bedzie
+                ilosc = (x_max-x_min) / jump; //ile wartosci x i y bedzie
             }
             lista = new float[2*ilosc+2]; //Dwie zmienne - jedna tablica ... xd
             float y;
@@ -40,7 +41,7 @@ class LinearFunction{
                 y = a*x + b; // y=ax+b
                 lista[2*i] = x; //przypisanie x
                 lista[2*i+1] = y; //przypisanie y
-                x+=abs(jump);
+                x+=jump;
                 if(jump == 0){
                     x=x_max+1;
                 }
@@ -84,7 +85,7 @@ class QuadraticFunction{
                 ilosc = 1;
             }
             else{
-                ilosc = (x_max-x_min)/abs(jump); //ile wartosci x i y bedzie
+                ilosc = (x_max-x_min)/ jump; //ile wartosci x i y bedzie
             }
             lista = new float[2*ilosc+2]; //Dwie zmienne - jedna tablica ... xd
             float y;
@@ -93,7 +94,7 @@ class QuadraticFunction{
                 y = a*(x*x) + b*x + c; // y=ax+b
                 lista[2*i] = x; //przypisanie x
                 lista[2*i+1] = y; //przypisanie y
-                x+=abs(jump);
+                x+=jump;
                 if(jump == 0){
                     x=x_max+1;
                 }
@@ -106,6 +107,62 @@ class QuadraticFunction{
         void wypisz(){
             //cout<<"ilosc: "<<ilosc<<endl;
             for(int i=0; i<=2*ilosc; i+=2){
+                cout<<"x: "<<lista[i]<<" | y: "<<lista[i+1]<<endl;
+            }
+        }
+};
+
+
+//Rozklad prawdopodobienstwa opisujacy liczbe sukcesow w podanych probach o danym prawdopodobienstwie sukcesu
+//Tutaj x to ilosc sukcesow a y to prawdopodobienstwa wystopienia danej liczby sukcesow w n-probach
+class BinomialDistribution{
+    public:
+        long double p;
+        long int n;
+        long double *lista;
+        
+        BinomialDistribution(long int pn, long double pp){
+            this->n = pn; //ilosc prob
+            this->p = pp; //prawdopodobienstwo sukcesu
+        }
+        
+        long double* wynik(){
+            int i=0;
+            lista = new long double[2*n+2]; 
+            long double y;
+            long int x = 0; 
+            while(x <= n){ 
+                y = newton(n,x) * pow(p,x) * pow((1-p),n-x);
+                //cout<<newton(n,x)<<" "<<pow(p,x)<<" "<<pow((1-p),n-x)<<endl;
+                lista[2*i] = x; //przypisanie x
+                lista[2*i+1] = y; //przypisanie y
+                x++;
+                i++;
+                
+            }
+            return lista; 
+        }
+        
+        long int silnia(int n){
+            if((n==0)||(n==1))
+            return 1;
+            else
+            return n*silnia(n-1);
+        }
+        
+        long double newton(int n, int k){
+            long double iloczyn = 1;
+            //cout<<n<<" "<<k<<endl;
+            for(int l=0;l<k;l++){
+                iloczyn*=(long double)(n-l)/(k-l);
+                cout<<iloczyn<<endl;
+            }
+            return iloczyn;
+        }
+        
+        void wypisz(){
+            //cout<<"ilosc: "<<ilosc<<endl;
+            for(long int i=0; i<=2*n; i+=2){
                 cout<<"x: "<<lista[i]<<" | y: "<<lista[i+1]<<endl;
             }
         }
