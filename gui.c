@@ -306,12 +306,6 @@ int main(int argc, char *argv[]){
     GtkToolItem *info_toolb;
 
     GdkPixbuf *icon;
-    
-    
-    //GtkWidget *vbox;
-    //GtkWidget *sw;
-    //GtkTreeModel *model;
-
 
 
     gtk_init(&argc, &argv);
@@ -357,18 +351,6 @@ int main(int argc, char *argv[]){
 
 
     gtk_box_pack_start(GTK_BOX(box), toolbar, FALSE, FALSE, 5);
-
-
-
-    //lista
-    /*
-    sw = gtk_scrolled_window_new(NULL, NULL);
-    gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(sw), GTK_SHADOW_ETCHED_IN);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-    gtk_box_pack_start(GTK_BOX(box), sw, TRUE, TRUE, 0);
-    */
-
-
 
     //sygnały
     g_signal_connect(G_OBJECT(linear_eq_toolb), "clicked",
