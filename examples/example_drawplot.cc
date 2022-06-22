@@ -1,5 +1,5 @@
 #include <iostream>
-#include "drawplot.h"
+#include "../drawplot.h"
 
 using namespace std;
 

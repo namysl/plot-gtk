@@ -1,6 +1,6 @@
 #include <iostream>
 #include <sstream>
-#include "rownania.h"
+#include "../linearequations.h"
 using namespace std;
 
 int main()
