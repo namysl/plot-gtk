@@ -40,6 +40,20 @@ int main()
     kwadratowa.wynik();
     kwadratowa.wypisz();
     
+    cout<<"\n===================="<<endl;
+    cout<<"\nTest rozkladu dwimianowego"<<endl;
+    long double p;
+    long int n;
+    cout<<"Podaj liczbe prob: ";
+    cin>>n;
+    cout<<"Podaj prawdopodobienstwo sukcesu: ";
+    cin>>p;
+
+    BinomialDistribution dwumianowe(n,p);
+  
+    dwumianowe.wynik();
+    dwumianowe.wypisz();
+    
    
     return 0;
 }
