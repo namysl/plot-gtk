@@ -1,9 +1,9 @@
 #include <gtk/gtk.h>
 
-GtkWidget *window, *treeview;
+GtkWidget *window;
 
 GdkPixbuf *create_pixbuf(const gchar *filename) {
-    //wczytywanie obrazow dla ikon
+    //wczytywanie obrazow
     GdkPixbuf *pixbuf;
     GError *error = NULL;
     pixbuf = gdk_pixbuf_new_from_file(filename, &error);
@@ -26,8 +26,8 @@ void plot_linear(GtkWindow *parent, gpointer data){
     GtkWidget *table;
 
     GtkWidget *label;
-    GtkWidget *slope, *y_intercept;  //a, b
-    GtkAdjustment *adjustment;
+    GtkWidget *slope, *y_intercept, *x_min, *x_max, *step;  //a, b
+    GtkAdjustment *adjustment; //adjustment -> startval, minval, maxval, step increment, page increment, page size
     
     gint response;
 
@@ -52,23 +52,119 @@ void plot_linear(GtkWindow *parent, gpointer data){
     gtk_grid_set_column_spacing(GTK_GRID(table), 25); //kolumnami
     gtk_box_pack_start(GTK_BOX(hbox), table, TRUE, TRUE, 0);
 
-
     //pola
-    
-    //randomowy wybor dla 10000
-    adjustment = gtk_adjustment_new(0, -10000, 10000, 1, 1, 1); //startval, minval, maxval,
-							          //step increment, page increment, page size
+    adjustment = gtk_adjustment_new(0, -10000, 10000, 1, 1, 1);
     label = gtk_label_new("Współczynnik kierunkowy (a):");
     gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
     slope = gtk_spin_button_new(adjustment, 5, 2);  //adjustment, climb_rate, digits
     gtk_grid_attach(GTK_GRID(table), slope, 1, 0, 4, 1);
 
     adjustment = gtk_adjustment_new(0, -10000, 10000, 1, 1, 1);
-    
     label = gtk_label_new("Wyraz wolny (b):");
     gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
     y_intercept = gtk_spin_button_new(adjustment, 5, 2);
     gtk_grid_attach(GTK_GRID(table), y_intercept, 1, 1, 4, 1);
+
+    adjustment = gtk_adjustment_new(0, -10000, 10000, 1, 1, 1);
+    label = gtk_label_new("Dolny zakres na osi x:");
+    gtk_grid_attach(GTK_GRID(table), label, 0, 2, 1, 1);
+    x_min = gtk_spin_button_new(adjustment, 5, 2);
+    gtk_grid_attach(GTK_GRID(table), x_min, 1, 2, 4, 1);
+    
+    adjustment = gtk_adjustment_new(0, -10000, 10000, 1, 1, 1);
+    label = gtk_label_new("Górny zakres na osi x:");
+    gtk_grid_attach(GTK_GRID(table), label, 0, 3, 1, 1);
+    x_max = gtk_spin_button_new(adjustment, 5, 2);
+    gtk_grid_attach(GTK_GRID(table), x_max, 1, 3, 4, 1);
+    
+    adjustment = gtk_adjustment_new(1, 0, 10000, 1, 1, 1);
+    label = gtk_label_new("Wielkość kroku:");
+    gtk_grid_attach(GTK_GRID(table), label, 0, 4, 1, 1);
+    step = gtk_spin_button_new(adjustment, 5, 2);
+    gtk_grid_attach(GTK_GRID(table), step, 1, 4, 4, 1);
+
+    //sygnaly do wywolania funkcji liniowej, rysowania wykresu i tak dalej
+//    g_signal_connect_swapped(dialog, "response", G_CALLBACK( NAZWA FUNKCJI JAK JUZ BEDZIE CO PODPIAC ), dialog);
+
+    gtk_widget_show_all(hbox);
+    response = gtk_dialog_run(GTK_DIALOG(dialog));
+
+    gtk_widget_destroy(dialog);
+}
+
+
+void plot_quadratic(GtkWindow *parent, gpointer data){
+    //wykres dla funkcji liniowej
+    parent = GTK_WINDOW(window);
+
+    GtkWidget *content_area;
+    GtkWidget *dialog;
+    GtkWidget *hbox;
+    GtkWidget *table;
+
+    GtkWidget *label;
+    GtkWidget *a, *b, *c, *x_min, *x_max, *step;
+    GtkAdjustment *adjustment;
+    
+    gint response;
+
+    GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
+
+    dialog = gtk_dialog_new_with_buttons("Wykres funkcji kwadratowej", parent,
+                                         flags,
+                                         ("OK"), GTK_RESPONSE_OK,
+                                         "Anuluj", GTK_RESPONSE_CANCEL,
+                                          NULL);
+
+    gtk_window_set_transient_for(GTK_WINDOW(dialog), parent);
+    content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    gtk_container_set_border_width(GTK_CONTAINER(hbox), 30);
+
+    gtk_box_pack_start(GTK_BOX(content_area), hbox, FALSE, FALSE, 0);
+
+    table = gtk_grid_new();
+    gtk_grid_set_row_spacing(GTK_GRID(table), 20); //odleglosc od obiektow wierszami
+    gtk_grid_set_column_spacing(GTK_GRID(table), 25); //kolumnami
+    gtk_box_pack_start(GTK_BOX(hbox), table, TRUE, TRUE, 0);
+
+    //pola
+    adjustment = gtk_adjustment_new(0, -10000, 10000, 1, 1, 1);
+    label = gtk_label_new("Wartość a:");
+    gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
+    a = gtk_spin_button_new(adjustment, 5, 2);  //adjustment, climb_rate, digits
+    gtk_grid_attach(GTK_GRID(table), a, 1, 0, 4, 1);
+
+    adjustment = gtk_adjustment_new(0, -10000, 10000, 1, 1, 1);
+    label = gtk_label_new("Wartość b:");
+    gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
+    b = gtk_spin_button_new(adjustment, 5, 2);
+    gtk_grid_attach(GTK_GRID(table), b, 1, 1, 4, 1);
+    
+    adjustment = gtk_adjustment_new(0, -10000, 10000, 1, 1, 1);
+    label = gtk_label_new("Wartość c:");
+    gtk_grid_attach(GTK_GRID(table), label, 0, 2, 1, 1);
+    c = gtk_spin_button_new(adjustment, 5, 2);
+    gtk_grid_attach(GTK_GRID(table), c, 1, 2, 4, 1);
+
+    adjustment = gtk_adjustment_new(0, -10000, 10000, 1, 1, 1);
+    label = gtk_label_new("Dolny zakres na osi x:");
+    gtk_grid_attach(GTK_GRID(table), label, 0, 3, 1, 1);
+    x_min = gtk_spin_button_new(adjustment, 5, 2);
+    gtk_grid_attach(GTK_GRID(table), x_min, 1, 3, 4, 1);
+    
+    adjustment = gtk_adjustment_new(0, -10000, 10000, 1, 1, 1);
+    label = gtk_label_new("Górny zakres na osi x:");
+    gtk_grid_attach(GTK_GRID(table), label, 0, 4, 1, 1);
+    x_max = gtk_spin_button_new(adjustment, 5, 2);
+    gtk_grid_attach(GTK_GRID(table), x_max, 1, 4, 4, 1);
+    
+    adjustment = gtk_adjustment_new(1, 0, 10000, 1, 1, 1);
+    label = gtk_label_new("Wielkość kroku:");
+    gtk_grid_attach(GTK_GRID(table), label, 0, 5, 1, 1);
+    step = gtk_spin_button_new(adjustment, 5, 2);
+    gtk_grid_attach(GTK_GRID(table), step, 1, 5, 4, 1);
 
     //sygnaly do wywolania funkcji liniowej, rysowania wykresu i tak dalej
 //    g_signal_connect_swapped(dialog, "response", G_CALLBACK( NAZWA FUNKCJI JAK JUZ BEDZIE CO PODPIAC ), dialog);
@@ -129,7 +225,10 @@ void show_plot_toolb(GtkWindow *parent, gpointer data){
 
     //tutaj sygnaly dla guzikow
     g_signal_connect (button_linear, "clicked",
-                      G_CALLBACK (plot_linear), NULL);
+                      G_CALLBACK(plot_linear), NULL);
+                      
+    g_signal_connect (button_quadratic, "clicked",
+                      G_CALLBACK(plot_quadratic), NULL);
 
     gtk_widget_show_all(hbox);
     response = gtk_dialog_run(GTK_DIALOG(dialog));
@@ -198,22 +297,22 @@ void show_linear_eq_toolb(GtkWindow *parent, gpointer data){
 
 int main(int argc, char *argv[]){
     GtkWidget *box;
-
     GtkWidget *toolbar;
-
+    GtkWidget *label;
+    
     GtkToolItem *linear_eq_toolb;
     GtkToolItem *plot_toolb;
     GtkToolItem *separator;
     GtkToolItem *info_toolb;
-    GtkToolItem *exit_toolb;
-
-    GtkWidget *vbox;
-    GtkWidget *sw;
-    GtkWidget *label;
-
-    GtkTreeModel *model;
 
     GdkPixbuf *icon;
+    
+    
+    //GtkWidget *vbox;
+    //GtkWidget *sw;
+    //GtkTreeModel *model;
+
+
 
     gtk_init(&argc, &argv);
 
@@ -259,11 +358,16 @@ int main(int argc, char *argv[]){
 
     gtk_box_pack_start(GTK_BOX(box), toolbar, FALSE, FALSE, 5);
 
+
+
     //lista
+    /*
     sw = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(sw), GTK_SHADOW_ETCHED_IN);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
     gtk_box_pack_start(GTK_BOX(box), sw, TRUE, TRUE, 0);
+    */
+
 
 
     //sygnały
