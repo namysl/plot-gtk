@@ -83,9 +83,6 @@ void plot_linear(GtkWindow *parent, gpointer data){
     step = gtk_spin_button_new(adjustment, 5, 2);
     gtk_grid_attach(GTK_GRID(table), step, 1, 4, 4, 1);
 
-    //sygnaly do wywolania funkcji liniowej, rysowania wykresu i tak dalej
-//    g_signal_connect_swapped(dialog, "response", G_CALLBACK( NAZWA FUNKCJI JAK JUZ BEDZIE CO PODPIAC ), dialog);
-
     gtk_widget_show_all(hbox);
     response = gtk_dialog_run(GTK_DIALOG(dialog));
 
@@ -166,14 +163,67 @@ void plot_quadratic(GtkWindow *parent, gpointer data){
     step = gtk_spin_button_new(adjustment, 5, 2);
     gtk_grid_attach(GTK_GRID(table), step, 1, 5, 4, 1);
 
-    //sygnaly do wywolania funkcji liniowej, rysowania wykresu i tak dalej
-//    g_signal_connect_swapped(dialog, "response", G_CALLBACK( NAZWA FUNKCJI JAK JUZ BEDZIE CO PODPIAC ), dialog);
+    gtk_widget_show_all(hbox);
+    response = gtk_dialog_run(GTK_DIALOG(dialog));
+
+    gtk_widget_destroy(dialog);
+}
+
+void plot_binomial_dist(GtkWindow *parent, gpointer data){
+    //wykres dla funkcji liniowej
+    parent = GTK_WINDOW(window);
+
+    GtkWidget *content_area;
+    GtkWidget *dialog;
+    GtkWidget *hbox;
+    GtkWidget *table;
+
+    GtkWidget *label;
+    GtkWidget *n, *p;
+    GtkAdjustment *adjustment;
+    
+    gint response;
+
+    GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
+
+    dialog = gtk_dialog_new_with_buttons("Wykres rozkładu dwumianowego", parent,
+                                         flags,
+                                         ("OK"), GTK_RESPONSE_OK,
+                                         "Anuluj", GTK_RESPONSE_CANCEL,
+                                          NULL);
+
+    gtk_window_set_transient_for(GTK_WINDOW(dialog), parent);
+    content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    gtk_container_set_border_width(GTK_CONTAINER(hbox), 30);
+
+    gtk_box_pack_start(GTK_BOX(content_area), hbox, FALSE, FALSE, 0);
+
+    table = gtk_grid_new();
+    gtk_grid_set_row_spacing(GTK_GRID(table), 20); //odleglosc od obiektow wierszami
+    gtk_grid_set_column_spacing(GTK_GRID(table), 25); //kolumnami
+    gtk_box_pack_start(GTK_BOX(hbox), table, TRUE, TRUE, 0);
+
+    //pola
+    adjustment = gtk_adjustment_new(0, 1, 10000, 1, 1, 1);
+    label = gtk_label_new("Liczba prób (n):");
+    gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
+    n = gtk_spin_button_new(adjustment, 5, 2);  //adjustment, climb_rate, digits
+    gtk_grid_attach(GTK_GRID(table), n, 1, 0, 4, 1);
+
+    adjustment = gtk_adjustment_new(0, 0, 1.1, 0.1, 0.1, 0.1);
+    label = gtk_label_new("Prawdopodobieństwo sukcesu w próbie (p):");
+    gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
+    p = gtk_spin_button_new(adjustment, 5, 2);
+    gtk_grid_attach(GTK_GRID(table), p, 1, 1, 4, 1);
 
     gtk_widget_show_all(hbox);
     response = gtk_dialog_run(GTK_DIALOG(dialog));
 
     gtk_widget_destroy(dialog);
 }
+
 
 
 void show_plot_toolb(GtkWindow *parent, gpointer data){
@@ -185,7 +235,7 @@ void show_plot_toolb(GtkWindow *parent, gpointer data){
     GtkWidget *hbox;
     GtkWidget *table;
 
-    GtkWidget *button_linear, *button_quadratic, *button_whatever;  //czekam na info
+    GtkWidget *button_linear, *button_quadratic, *button_binomial;
   
     gint response;
 
@@ -193,7 +243,6 @@ void show_plot_toolb(GtkWindow *parent, gpointer data){
 
     dialog = gtk_dialog_new_with_buttons("Wykres funkcji", parent,
                                          flags,
-                                         //("OK"), GTK_RESPONSE_OK,
                                          "Anuluj", GTK_RESPONSE_CANCEL,
                                           NULL);
 
@@ -219,17 +268,20 @@ void show_plot_toolb(GtkWindow *parent, gpointer data){
     gtk_grid_attach(GTK_GRID(table), button_quadratic, 0, 1, 1, 1);
     gtk_widget_set_size_request(button_quadratic, 100, 30);
 
-    button_whatever = gtk_button_new_with_label("Work in progress itp., itd., etc.");
-    gtk_grid_attach(GTK_GRID(table), button_whatever, 0, 2, 1, 1);
-    gtk_widget_set_size_request(button_whatever, 100, 30);
+    button_binomial = gtk_button_new_with_label("Rozkład dwumianowy");
+    gtk_grid_attach(GTK_GRID(table), button_binomial, 0, 2, 1, 1);
+    gtk_widget_set_size_request(button_binomial, 100, 30);
 
     //tutaj sygnaly dla guzikow
-    g_signal_connect (button_linear, "clicked",
-                      G_CALLBACK(plot_linear), NULL);
+    g_signal_connect(button_linear, "clicked",
+                     G_CALLBACK(plot_linear), NULL);
                       
-    g_signal_connect (button_quadratic, "clicked",
-                      G_CALLBACK(plot_quadratic), NULL);
+    g_signal_connect(button_quadratic, "clicked",
+                     G_CALLBACK(plot_quadratic), NULL);
 
+    g_signal_connect(button_binomial, "clicked",
+                     G_CALLBACK(plot_binomial_dist), NULL);
+                      
     gtk_widget_show_all(hbox);
     response = gtk_dialog_run(GTK_DIALOG(dialog));
 
@@ -237,7 +289,7 @@ void show_plot_toolb(GtkWindow *parent, gpointer data){
 }
 
 
-void new(GtkWindow *parent, gpointer data){
+void result_linear_eq(GtkWindow *parent, gpointer data){
 	parent = GTK_WINDOW(window);
 
     GtkWidget *content_area;
@@ -254,13 +306,12 @@ void new(GtkWindow *parent, gpointer data){
 
     dialog = gtk_dialog_new_with_buttons("Rozwiązanie", parent,
                                          flags,
-                                         ("OK"), GTK_RESPONSE_OK,
+                                         ("Zamknij"), GTK_RESPONSE_CANCEL,
                                           NULL,
                                           NULL);
 
     gtk_window_set_transient_for(GTK_WINDOW(dialog), parent);
     content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-
 
     hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_container_set_border_width(GTK_CONTAINER(hbox), 30);
@@ -268,27 +319,20 @@ void new(GtkWindow *parent, gpointer data){
     gtk_box_pack_start(GTK_BOX(content_area), hbox, FALSE, FALSE, 0);
 
     table = gtk_grid_new();
-    //gtk_grid_set_row_spacing(GTK_GRID(table), 20); //odleglosc od obiektow wierszami
-    //gtk_grid_set_column_spacing(GTK_GRID(table), 25); //kolumnami
     gtk_box_pack_start(GTK_BOX(hbox), table, TRUE, TRUE, 0);
 
     //pola
-	view = gtk_text_view_new ();
-
-	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW (view));
+	view = gtk_text_view_new();
+	
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(view));
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(view), FALSE);
 	gtk_text_buffer_set_text(buffer, "Tutaj rozwiązanie elo", -1);
-
 	gtk_grid_attach(GTK_GRID(table), view, 0, 0, 1, 1);
-
-    //sygnaly do wywolania funkcji liniowej, rysowania wykresu i tak dalej
-//    g_signal_connect_swapped(dialog, "response", G_CALLBACK( NAZWA FUNKCJI JAK JUZ BEDZIE CO PODPIAC ), dialog);
 
     gtk_widget_show_all(hbox);
     response = gtk_dialog_run(GTK_DIALOG(dialog));
 
     gtk_widget_destroy(dialog);
-
 }
 
 
@@ -302,7 +346,7 @@ void show_linear_eq_toolb(GtkWindow *parent, gpointer data){
     GtkWidget *table;
 	GtkWidget *view;
     GtkWidget *label;
-    GtkWidget *left_side, *right_side;
+    GtkWidget *button_ok, *button_cancel;
     GtkTextBuffer *buffer;
     gint response;
 
@@ -310,9 +354,9 @@ void show_linear_eq_toolb(GtkWindow *parent, gpointer data){
 
     dialog = gtk_dialog_new_with_buttons("Rozwiąż równanie liniowe", parent,
                                          flags,
-                                         ("OK"), GTK_RESPONSE_OK,
-                                         "Anuluj", GTK_RESPONSE_CANCEL,
-                                          NULL);
+                                         NULL,
+                                         NULL,
+                                         NULL);
 
     gtk_window_set_transient_for(GTK_WINDOW(dialog), parent);
     content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
@@ -324,22 +368,25 @@ void show_linear_eq_toolb(GtkWindow *parent, gpointer data){
 
     table = gtk_grid_new();
     gtk_grid_set_row_spacing(GTK_GRID(table), 20); //odleglosc od obiektow wierszami
-    gtk_grid_set_column_spacing(GTK_GRID(table), 25); //kolumnami
+    //gtk_grid_set_column_spacing(GTK_GRID(table), 25); //kolumnami
     gtk_box_pack_start(GTK_BOX(hbox), table, TRUE, TRUE, 0);
 
     label = gtk_label_new("Wprowadź równanie:");
     gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	view = gtk_text_view_new();
-	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW (view));
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(view));
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(view), TRUE);
 	gtk_grid_attach(GTK_GRID(table), view, 0, 1, 4, 1);
+	
+	button_ok = gtk_button_new_with_label("Rozwiąż");
+    gtk_grid_attach(GTK_GRID(table), button_ok, 0, 2, 1, 1);
 
-	g_signal_connect_swapped(dialog, "response", G_CALLBACK(new), dialog);
+	g_signal_connect(button_ok, "clicked", G_CALLBACK(result_linear_eq), NULL);
 
     gtk_widget_show_all(hbox);
     response = gtk_dialog_run(GTK_DIALOG(dialog));
-
+    
     gtk_widget_destroy(dialog);
 }
 
