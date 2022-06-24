@@ -237,6 +237,61 @@ void show_plot_toolb(GtkWindow *parent, gpointer data){
 }
 
 
+void new(GtkWindow *parent, gpointer data){
+	parent = GTK_WINDOW(window);
+
+    GtkWidget *content_area;
+    GtkWidget *dialog;
+    GtkWidget *hbox;
+    GtkWidget *table;
+    GtkWidget *view;
+
+    GtkTextBuffer *buffer;
+    
+    gint response;
+
+    GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
+
+    dialog = gtk_dialog_new_with_buttons("Rozwiązanie", parent,
+                                         flags,
+                                         ("OK"), GTK_RESPONSE_OK,
+                                          NULL,
+                                          NULL);
+
+    gtk_window_set_transient_for(GTK_WINDOW(dialog), parent);
+    content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+
+
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    gtk_container_set_border_width(GTK_CONTAINER(hbox), 30);
+
+    gtk_box_pack_start(GTK_BOX(content_area), hbox, FALSE, FALSE, 0);
+
+    table = gtk_grid_new();
+    //gtk_grid_set_row_spacing(GTK_GRID(table), 20); //odleglosc od obiektow wierszami
+    //gtk_grid_set_column_spacing(GTK_GRID(table), 25); //kolumnami
+    gtk_box_pack_start(GTK_BOX(hbox), table, TRUE, TRUE, 0);
+
+    //pola
+	view = gtk_text_view_new ();
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW (view));
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(view), FALSE);
+	gtk_text_buffer_set_text(buffer, "Tutaj rozwiązanie elo", -1);
+
+	gtk_grid_attach(GTK_GRID(table), view, 0, 0, 1, 1);
+
+    //sygnaly do wywolania funkcji liniowej, rysowania wykresu i tak dalej
+//    g_signal_connect_swapped(dialog, "response", G_CALLBACK( NAZWA FUNKCJI JAK JUZ BEDZIE CO PODPIAC ), dialog);
+
+    gtk_widget_show_all(hbox);
+    response = gtk_dialog_run(GTK_DIALOG(dialog));
+
+    gtk_widget_destroy(dialog);
+
+}
+
+
 void show_linear_eq_toolb(GtkWindow *parent, gpointer data){
     //rownania liniowe popup
     parent = GTK_WINDOW(window);
@@ -245,10 +300,10 @@ void show_linear_eq_toolb(GtkWindow *parent, gpointer data){
     GtkWidget *dialog;
     GtkWidget *hbox;
     GtkWidget *table;
-
+	GtkWidget *view;
     GtkWidget *label;
     GtkWidget *left_side, *right_side;
-    
+    GtkTextBuffer *buffer;
     gint response;
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
@@ -272,21 +327,15 @@ void show_linear_eq_toolb(GtkWindow *parent, gpointer data){
     gtk_grid_set_column_spacing(GTK_GRID(table), 25); //kolumnami
     gtk_box_pack_start(GTK_BOX(hbox), table, TRUE, TRUE, 0);
 
-    //pola
-    label = gtk_label_new("Lewa strona równania:");
+    label = gtk_label_new("Wprowadź równanie:");
     gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
-    left_side = gtk_entry_new();
-    gtk_grid_attach(GTK_GRID(table), left_side, 1, 0, 4, 1);
 
-    label = gtk_label_new("Prawa strona równania:");
-    gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
-    right_side = gtk_entry_new();
-    gtk_grid_attach(GTK_GRID(table), right_side, 1, 1, 4, 1);
+	view = gtk_text_view_new();
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW (view));
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(view), TRUE);
+	gtk_grid_attach(GTK_GRID(table), view, 0, 1, 4, 1);
 
-
-// wywola funkcje obliczajaca rownanie
-// wziac pod uwage rozne przypadki => wprowadzone rownanie nie bylo poprawne etc.
-//    g_signal_connect_swapped(dialog, "response", G_CALLBACK( NAZWA FUNKCJI JAK JUZ BEDZIE CO PODPIAC ), dialog);
+	g_signal_connect_swapped(dialog, "response", G_CALLBACK(new), dialog);
 
     gtk_widget_show_all(hbox);
     response = gtk_dialog_run(GTK_DIALOG(dialog));
