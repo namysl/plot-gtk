@@ -2,9 +2,9 @@
 #define ROWNANIA_H_INCLUDED
 
 
-
 #endif // ROWNANIA_H_INCLUDED
 //using namespace std;
+
 
 class Rownania{
     public:
@@ -72,6 +72,22 @@ class Rownania{
             }
         }
 
+		string getString(){
+			string str4gtk;
+			
+		    if(!daSieRozwiazac){
+                str4gtk.append("Nie da sie rozwiazac tego rownania");
+            }
+            else{
+		        for(int i=0; i<ilosc; i++){
+		            str4gtk += znaki[i];
+		            str4gtk += " = ";
+		            str4gtk += to_string(wyniki[i]);
+		            str4gtk += "\n";
+		        }
+            }
+            return str4gtk;
+		}
 
 
         void pokaz(){

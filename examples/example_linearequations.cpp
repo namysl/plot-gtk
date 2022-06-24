@@ -1,8 +1,8 @@
 #include <iostream>
 #include <sstream>
+#include <string>
 using namespace std;
-#include "../rownania.h"
-
+#include "../linearequations.h"
 int main()
 {
     /*string kontrola;
@@ -68,12 +68,21 @@ int main()
     int ilosc;
     double* wyniki;
     char* znaki;
+    string str;
+    const char* str2;
+
     {Rownania rownania("2x-y=2\ny=2",true);
     ilosc = rownania.getIlosc();
     wyniki = rownania.getWyniki();
-    znaki = rownania.getZnaki();}
+    znaki = rownania.getZnaki();
+    str = rownania.getString();
+    }
+
     for(int i = 0;i<ilosc;i++){
         cout<<znaki[i]<<" : "<<wyniki[i]<<endl;
     }
+
+    cout << "string test:" << endl;
+    cout << str << endl;
     return 0;
 }
