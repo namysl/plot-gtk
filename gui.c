@@ -209,7 +209,7 @@ void plot_binomial_dist(GtkWindow *parent, gpointer data){
     adjustment = gtk_adjustment_new(0, 1, 10000, 1, 1, 1);
     label = gtk_label_new("Liczba prób (n):");
     gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
-    n = gtk_spin_button_new(adjustment, 5, 2);  //adjustment, climb_rate, digits
+    n = gtk_spin_button_new(adjustment, 5, 0);  //adjustment, climb_rate, digits
     gtk_grid_attach(GTK_GRID(table), n, 1, 0, 4, 1);
 
     adjustment = gtk_adjustment_new(0, 0, 1.1, 0.1, 0.1, 0.1);
@@ -352,7 +352,7 @@ void show_linear_eq_toolb(GtkWindow *parent, gpointer data){
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    dialog = gtk_dialog_new_with_buttons("Rozwiąż równanie liniowe", parent,
+    dialog = gtk_dialog_new_with_buttons("Równanie liniowe", parent,
                                          flags,
                                          NULL,
                                          NULL,
