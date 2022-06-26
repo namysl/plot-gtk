@@ -59,6 +59,24 @@ class plotargs{
 			return true;
 		}
 		
+		bool importval(long double tt[], long int num){//mathfunction3
+			if (length != num) return false;
+			for (int i=0; i<num; i++){
+				x[i] = static_cast<double>(tt[2*i]);
+				y[i] = static_cast<double>(tt[2*i+1]);
+			}
+			return true;
+		}
+		bool importval(float tt[], int num){//mathfunction1,2
+			if (length != num) return false;
+			for (int i=0; i<num; i++){
+				x[i] = tt[2*i];
+				y[i] = tt[2*i+1];
+			}
+			return true;
+		}
+
+
 		void setcolor(char c){
 			color[0] = c;
 		}
