@@ -24,4 +24,4 @@ int main(){
 	C.importval(lista3,n);
 	C.draw();
 }
-//g++ newplotexample.cc -std=c++11 -I/usr/include/python2.7 -lpython2.7 -o testplot
+//g++ example_drawplot2.cc -std=c++11 -I/usr/include/python2.7 -lpython2.7 -o testplot
