@@ -146,8 +146,8 @@ void linear_eq(){
     string str;
     
     cout << BOLDWHITE << "Równanie liniowe" << RESET << endl;
-
-	cin >> str; // 2x-y=2\ny=2
+	cout << "rozdzielane średnikami" << endl;
+	cin >> str; // 2x-y=2;y=2
 	
     Rownania rownania(str, true);
     ilosc = rownania.getIlosc();

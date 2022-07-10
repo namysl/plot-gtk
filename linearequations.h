@@ -13,7 +13,7 @@ class Rownania{
         Rownania(string linijka, bool wypisz = false){
             string split;
             stringstream X(linijka);
-            while(getline(X, split, '\n')) {
+            while(getline(X, split, ';')) {
                 if(wypisz)
                     cout << split << endl;
                 this->ilosc++;
@@ -22,7 +22,7 @@ class Rownania{
             linijki = new string[ilosc];
             stringstream Y(linijka);
             int i=0;
-            while(getline(Y, split, '\n')) {
+            while(getline(Y, split, ';')) {
                 linijki[i++] = split;
             }
             znaki = new char[ilosc];
@@ -71,24 +71,6 @@ class Rownania{
                 cout<<znaki[i]<<":"<<wyniki[i]<<endl;
             }
         }
-
-		string getString(){
-			string str4gtk;
-			
-		    if(!daSieRozwiazac){
-                str4gtk.append("Nie da sie rozwiazac tego rownania");
-            }
-            else{
-		        for(int i=0; i<ilosc; i++){
-		            str4gtk += znaki[i];
-		            str4gtk += " = ";
-		            str4gtk += to_string(wyniki[i]);
-		            str4gtk += "\n";
-		        }
-            }
-            return str4gtk;
-		}
-
 
         void pokaz(){
             if(!daSieRozwiazac){
