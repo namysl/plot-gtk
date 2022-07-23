@@ -1,0 +1,13 @@
+space: ~416.5MB
+
+sudo chmod 666 /var/run/docker.sock
+
+docker build -t test .
+
+xhost+
+
+docker run -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix test
+
+---
+
+docker system prune -a
