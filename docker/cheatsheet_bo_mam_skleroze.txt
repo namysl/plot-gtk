@@ -4,7 +4,7 @@ sudo chmod 666 /var/run/docker.sock
 
 docker build -t test .
 
-xhost+
+xhost +
 
 docker run -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix test
 
