@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+	<script defer src="https://pyscript.net/latest/pyscript.js"></script>
+  </head>
+
+  <body>
+    <p id="title">Liniowa</p>
+
+	<form id="form1">
+		a: <input type="text" id="a_val"><br>
+		b: <input type="text" id="b_val"><br>
+		x_min: <input type="text" id="x_min_val"><br>
+		x_max: <input type="text" id="x_max_val"><br>
+		jump: <input type="text" id="jump_val"><br>
+	</form>
+	
+	<button id="submit-button" type="submit" py-onClick="calc_linear()">Wynik</button>
+	
+	<p id="test_output_linear"></p>
+	
+	<div id="mpl"></div>
+	
+<py-config>
+	packages = [
+	  "matplotlib",
+	]
+</py-config>
+		
+<py-script>
+import matplotlib.pyplot as plt
+
+class LinearFunction:
+	def __init__(self,a,b,x_min,x_max,jump):
+		self.a = a
+		self.b = b
+		self.x_min = x_min
+		self.x_max = x_max
+		self.jump = jump
+
+	def wynik(self):
+		self.lista = []
+		x = self.x_min
+
+		while(self.x_max >= x):
+			y = self.a*x + self.b
+			self.lista.append(x)
+			self.lista.append(y)
+			x+=self.jump
+			if(self.jump==0):
+				x=self.x_max+1
+
+		return self.lista
+
+	def wypisz(self):
+		for i in range(0,len(self.lista)-1,2):
+			print("x: ",self.lista[i]," | y: ",self.lista[i+1])
+
+def calc_linear(*args, **kwargs):
+	a = float(Element("a_val").element.value)
+	b = float(Element("b_val").element.value)
+	x_min = float(Element("x_min_val").element.value)
+	x_max = float(Element("x_max_val").element.value)
+	jump = float(Element("jump_val").element.value)
+	
+	output = LinearFunction(a, b, x_min, x_max, jump)
+	result = output.wynik()
+	
+	x = result[0::2]
+	y = result[1::2]
+	
+	#print("result:", result)
+	#print("x:", x)
+	#print("y:", y)
+	#Element("test_output_linear").element.innerText = output.wypisz()
+	
+	plot(x, y, a, b)
+	
+def plot(x, y, a, b):
+	plt.plot(x, y, '-g')
+	plt.title('Wykres funkcji liniowej y={}x+{}'.format(a, b))
+	plt.xlabel('x')
+	plt.ylabel('y')
+	plt.grid()
+	plt.show()
+	display(plt, target="mpl")
+</py-script>
+			
+  </body>
+</html>
